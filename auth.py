@@ -1,0 +1,62 @@
+import streamlit as st
+from supabase import create_client
+from dotenv import load_dotenv
+import os
+
+# Initialize Supabase client using environment variables
+# Streamlit automatically pulls these from the Linux environment
+def get_supabase():
+    url = os.environ.get("URL")
+    key = os.environ.get("KEY")
+    if not url or not key:
+        # This helps you debug if your 'export' commands didn't work
+        raise ValueError("Missing Supabase Environment Variables!")
+    return create_client(url, key)
+
+# Create ONE instance to be used across the whole app
+supabase = get_supabase()
+
+def sign_up(email, password):
+    """Handles user registration via Supabase Auth."""
+    try:
+        response = supabase.auth.sign_up({"email": email, "password": password})
+        if response.user:
+            return True, "Sign up successful!."
+        return False, "Sign up failed."
+    except Exception as e:
+        return False, str(e)
+
+def login(email, password):
+    """Handles user login via Supabase Auth."""
+    try:
+        response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+        if response.user:
+            return True, "Login successful!"
+        return False, "Invalid email or password."
+    except Exception as e:
+        return False, str(e)
+
+def get_current_user_id():
+    """Retrieves the secure UUID of the logged-in user."""
+    user = supabase.auth.get_user()
+    if user:
+        return user.user.id
+    return None
+target_id = get_current_user_id()
+
+# --- auth.py ---
+def clear_history():
+    target_id = get_current_user_id()
+    if not target_id:
+        return False, "You are not logged in."
+    
+    try:
+        response = (
+            supabase.table("translation_history")
+            .delete()
+            .eq("user_id", target_id)
+            .execute()
+        )
+        return True, "History cleared successfully!"
+    except Exception as e:
+        return False, f"Database error: {e}"
