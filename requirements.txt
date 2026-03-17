@@ -1,0 +1,5 @@
+streamlit
+supabase
+deep-translator
+Pillow
+python-dotenv
