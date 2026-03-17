@@ -10,6 +10,7 @@ import supabase
 # In main.py
 from auth import login, sign_up, get_current_user_id, supabase, clear_history
 from admin import show_admin_panel
+from utils import handler
 
 
 
@@ -244,10 +245,8 @@ try:
             if uploaded_file.size > 5 * 1024 * 1024:
                 st.error("❌ File is too large. Please upload a file under 5MB.")
             else:
-                try:
-                    file_content = uploaded_file.getvalue().decode("utf-8")
-    
-                    if len(file_content) > 4000:
+                file_content = uploaded_file.getvalue().decode("utf-8")
+                if len(file_content) > 4000:
                         st.warning("❌ File content exceeds 4000 characters.Chunking and splitting might solve this but Chunking isn't stable i.e Chunking might not always work also most features would be deactivated to ensure stability during chunking.")
                         with st.expander("Do wish to perform chunking?"):
                             col1, col2 = st.columns(2)
@@ -264,7 +263,7 @@ try:
                                         
     # Output: First half: abcd, Second half: efgh
     
-                    else:
+                else:
                         st.text_area("Original Content Preview", file_content, height=100)
     
                         if st.button("Translate File"):
@@ -281,10 +280,6 @@ try:
                                     file_name=f"Versatranslate_v1_{selected_lang_name}_{uploaded_file.name}",
                                     mime="text/plain"
                                 )
-                except UnicodeDecodeError:
-                    st.error("❌ Error decoding file. Please ensure it is a valid UTF-8 text file.")
-                except Exception as e:
-                    st.error(f"❌ An unexpected error occurred: {e}")
     
     # --- HISTORY DISPLAY ---
     st.subheader("Your Translation History")
@@ -318,4 +313,5 @@ try:
         st.write(f"Output: {item['output_text'][:100]}")
         st.divider()
 except Exception as e:
-    pass
+    handler.log(e, code="500")
+    handler.respond(code="500")
