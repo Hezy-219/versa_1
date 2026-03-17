@@ -2,6 +2,41 @@ import streamlit as st
 from supabase import create_client
 from dotenv import load_dotenv
 import os
+import streamlit as st
+import traceback
+import datetime
+import sys
+
+class ErrorHandler:
+    def __init__(self, log_file="error.log"):
+        self.log_file = log_file
+
+    def log(self, error, code="500"):
+        timestamp = datetime.datetime.now()
+        trace = traceback.format_exc()
+        
+        # 1. Write to file (for local testing)
+        try:
+            with open(self.log_file, "a") as f:
+                f.write(f"\n[{timestamp}] ERROR {code}\n{trace}\n---\n")
+        except:
+            pass 
+
+        # 2. Print to System Console (CRITICAL for Streamlit Cloud Logs)
+        # This is what you will see in the black sidebar on the website
+        print(f"!!! [{timestamp}] APP ERROR {code} !!!", file=sys.stderr)
+        print(trace, file=sys.stderr)
+
+    def respond(self, code="500"):
+        messages = {
+            "101": "Login failed. Please check your credentials.",
+            "201": "Sign-up failed. User may already exist.", # Added for your sign-up flow
+            "203": "Translation failed. Try again.",
+            "301": "File processing error. Try a smaller file.",
+            "603": "Server is currently unavailable. Please retry shortly.",
+            "500": "Something went wrong. Please try again."
+        }
+        st.error(f"{messages.get(code, messages['500'])} (Error {code})")
 
 # Initialize Supabase client using environment variables
 # Streamlit automatically pulls these from the Linux environment
@@ -16,15 +51,21 @@ def get_supabase():
 # Create ONE instance to be used across the whole app
 supabase = get_supabase()
 
+err = ErrorHandler()
+
 def sign_up(email, password):
-    """Handles user registration via Supabase Auth."""
     try:
+        if len(password) < 8:
+            return False, "108" # Custom code for short password
+
         response = supabase.auth.sign_up({"email": email, "password": password})
         if response.user:
-            return True, "Sign up successful!."
-        return False, "Sign up failed."
+            return True, "Success"
+        return False, "500"
+        
     except Exception as e:
-        return "Sorry an error occured during sign up"
+        err.log(e, code="201") # Log the nasty technical details
+        return False, "201"    # Return the clean code to the UI
 
 def login(email, password):
     """Handles user login via Supabase Auth."""
