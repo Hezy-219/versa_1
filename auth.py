@@ -6,11 +6,11 @@ import os
 # Initialize Supabase client using environment variables
 # Streamlit automatically pulls these from the Linux environment
 def get_supabase():
-    url = os.environ.get("URL")
-    key = os.environ.get("KEY")
+    url = st.secrets.get("URL") or os.getenv("URL")
+    key = st.secrets.get("KEY") or os.getenv("KEY")
     if not url or not key:
         # This helps you debug if your 'export' commands didn't work
-        raise ValueError("Missing Supabase Environment Variables!")
+        raise ValueError("Sorry we are having problems with our database please try again later, thank you")
     return create_client(url, key)
 
 # Create ONE instance to be used across the whole app
@@ -24,7 +24,7 @@ def sign_up(email, password):
             return True, "Sign up successful!."
         return False, "Sign up failed."
     except Exception as e:
-        return False, str(e)
+        return "Sorry an error occured during sign up"
 
 def login(email, password):
     """Handles user login via Supabase Auth."""
