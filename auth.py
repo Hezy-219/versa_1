@@ -11,8 +11,8 @@ from utils import handler
 # Initialize Supabase client using environment variables
 # Streamlit automatically pulls these from the Linux environment
 def get_supabase():
-    url = st.secrets.get("URL") or os.getenv("URL")
-    key = st.secrets.get("KEY") or os.getenv("KEY")
+    url = st.secrets.get("url") or os.getenv("url")
+    key = st.secrets.get("key") or os.getenv("key")
     if not url or not key:
         # This helps you debug if your 'export' commands didn't work
         raise ValueError(f"Keys found: {list(st.secrets.keys())}. URL env: {os.getenv('URL') is not None}")
