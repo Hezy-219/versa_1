@@ -28,11 +28,6 @@ try:
         layout="centered"
     )
     
-    # --- SESSION STATE ---
-    if 'authenticated' not in st.session_state:
-        st.session_state['authenticated'] = False
-    if 'user_email' not in st.session_state:
-        st.session_state['user_email'] = None
     
     # --- RANDOM LOGIN WORDS ---
     words = {i: msg for i, msg in enumerate([
@@ -79,7 +74,7 @@ try:
                     if success:
                         st.success(msg)
                     else:
-                        st.error(f"Error: {msg}")
+                        st.error(f"Error: Server seems to be encountering errors")
                 else:
                     success, msg = login(email, password)
                     if success:
