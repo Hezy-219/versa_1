@@ -22,7 +22,7 @@ from utils import handler
 # --- CONFIGURATION ---
 # No more Image.open(), no more file path issues
 st.write("Updated version deployed successfully. Enjoy seamless translations!")
-try:
+try: 
     st.set_page_config(
         page_title="VersaTranslate", 
         page_icon="🌐", 
@@ -310,4 +310,4 @@ try:
         st.divider()
 except Exception as e:
     handler.log(e, code="500")
-    handler.respond(code="500")
+    st.write(f"e")
