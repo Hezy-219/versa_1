@@ -8,7 +8,7 @@ import supabase
 
 # Import your optimized auth.py and admin panel
 # In main.py
-from auth import login, sign_up, get_current_user_id, supabase, clear_history
+from auth import login, sign_up_user, get_current_user_id, supabase, clear_history
 from admin import show_admin_panel
 from utils import handler
 
@@ -70,7 +70,7 @@ try:
     
             if st.button("Submit"):
                 if auth_mode == "Sign Up":
-                    success, msg = sign_up(email, password)
+                    success, msg = sign_up_user(email, password)
                     if success:
                         st.success(msg)
                     else:
