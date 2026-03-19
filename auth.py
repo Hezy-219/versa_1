@@ -2,41 +2,11 @@ import streamlit as st
 from supabase import create_client
 from dotenv import load_dotenv
 import os
-import streamlit as st
 import traceback
 import datetime
 import sys
 
-class ErrorHandler:
-    def __init__(self, log_file="error.log"):
-        self.log_file = log_file
-
-    def log(self, error, code="500"):
-        timestamp = datetime.datetime.now()
-        trace = traceback.format_exc()
-        
-        # 1. Write to file (for local testing)
-        try:
-            with open(self.log_file, "a") as f:
-                f.write(f"\n[{timestamp}] ERROR {code}\n{trace}\n---\n")
-        except:
-            pass 
-
-        # 2. Print to System Console (CRITICAL for Streamlit Cloud Logs)
-        # This is what you will see in the black sidebar on the website
-        print(f"!!! [{timestamp}] APP ERROR {code} !!!", file=sys.stderr)
-        print(trace, file=sys.stderr)
-
-    def respond(self, code="500"):
-        messages = {
-            "101": "Login failed. Please check your credentials.",
-            "201": "Sign-up failed. User may already exist.", # Added for your sign-up flow
-            "203": "Translation failed. Try again.",
-            "301": "File processing error. Try a smaller file.",
-            "603": "Server is currently unavailable. Please retry shortly.",
-            "500": "Something went wrong. Please try again."
-        }
-        st.error(f"{messages.get(code, messages['500'])} (Error {code})")
+from utils import handler
 
 # Initialize Supabase client using environment variables
 # Streamlit automatically pulls these from the Linux environment
@@ -45,13 +15,12 @@ def get_supabase():
     key = st.secrets.get("KEY") or os.getenv("KEY")
     if not url or not key:
         # This helps you debug if your 'export' commands didn't work
-        raise ValueError("Sorry we are having problems with our database please try again later, thank you")
+        raise ValueError(f"Keys found: {list(st.secrets.keys())}. URL env: {os.getenv('URL') is not None}")
     return create_client(url, key)
 
 # Create ONE instance to be used across the whole app
 supabase = get_supabase()
 
-err = ErrorHandler()
 
 def sign_up(email, password):
     try:
@@ -64,7 +33,7 @@ def sign_up(email, password):
         return False, "500"
         
     except Exception as e:
-        err.log(e, code="201") # Log the nasty technical details
+        handler.log(e, code="201") # Log the nasty technical details
         return False, "201"    # Return the clean code to the UI
 
 def login(email, password):
