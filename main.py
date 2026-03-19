@@ -74,7 +74,7 @@ try:
                     if success:
                         st.success(msg)
                     else:
-                        st.error(f"Error: Server seems to be encountering errors")
+                        st.error(f"Error: {handler.respond(code="201")}")
                 else:
                     success, msg = login(email, password)
                     if success:
