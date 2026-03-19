@@ -21,19 +21,18 @@ def get_supabase():
 supabase = get_supabase()
 
 
-def sign_up(email, password):
+def sign_up_user(email, password):
     try:
-        if len(password) < 8:
-            return False, "108" # Custom code for short password
-
-        response = supabase.auth.sign_up({"email": email, "password": password})
-        if response.user:
+        res = supabase.auth.sign_up({
+            "email": email, 
+            "password": password
+        })
+        # If res.user exists, they are signed up!
+        if res.user:
             return True, "Success"
-        return False, "500"
-        
     except Exception as e:
-        handler.log(e, code="201") # Log the nasty technical details
-        return False, "201"    # Return the clean code to the UI
+        print(f"Auth Error: {e}")
+        return False, "201"
 
 def login(email, password):
     """Handles user login via Supabase Auth."""
