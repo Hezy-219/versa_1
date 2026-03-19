@@ -17,7 +17,6 @@ def get_supabase():
         # This helps you debug if your 'export' commands didn't work
         raise ValueError(f"Keys found: {list(st.secrets.keys())}. URL env: {os.getenv('URL') is not None}")
     return create_client(url, key)
-
 # Create ONE instance to be used across the whole app
 supabase = get_supabase()
 
