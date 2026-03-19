@@ -310,4 +310,4 @@ try:
         st.divider()
 except Exception as e:
     handler.log(e, code="500")
-    st.write(f"e")
+    st.write(f"{e}")
