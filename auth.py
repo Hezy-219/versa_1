@@ -31,8 +31,8 @@ def sign_up_user(email, password):
         if res.user:
             return True, "Success"
     except Exception as e:
-        print(f"Auth Error: {e}")
-        return False, "201"
+        handler.log("Error during sign-up", code="201")
+        st.write(e)
 
 def login(email, password):
     """Handles user login via Supabase Auth."""
@@ -42,7 +42,7 @@ def login(email, password):
             return True, "Login successful!"
         return False, "Invalid email or password."
     except Exception as e:
-        return False, str(e)
+        st.write(e)
 
 def get_current_user_id():
     """Retrieves the secure UUID of the logged-in user."""
