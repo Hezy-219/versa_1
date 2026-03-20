@@ -1,14 +1,11 @@
 import streamlit as st
-from deep_translator import GoogleTranslator
+from auth import login, sign_up_user, get_current_user_id, supabase, clear_history
+from admin import show_admin_panel
+from utils import handler
 import time
 import random
 import os
 from PIL import Image
-
-# Custom imports
-from auth import login, sign_up_user, get_current_user_id, supabase, clear_history
-from admin import show_admin_panel
-from utils import handler
 
 # --- CONFIGURATION ---
 try: 
@@ -42,17 +39,15 @@ if 'authenticated' not in st.session_state:
 if 'user_email' not in st.session_state:
     st.session_state['user_email'] = None
 if 'run_words' not in st.session_state:
-    st.session_state['run_words'] = True  # Triggers the welcome toast on login
+    st.session_state['run_words'] = True
 
 # 2. Authentication Gate
 if not st.session_state['authenticated']:
     st.title("🔐 Login to VersaTranslate")
     
-    # Using a container helps keep the layout organized and prevents rendering bugs
     with st.container():
         auth_mode = st.radio("Choose:", ["Login", "Sign Up"])
         
-        # Input widgets
         email = st.text_input("Username (Email)")
         password = st.text_input(
             "Password", 
@@ -65,14 +60,14 @@ if not st.session_state['authenticated']:
                 try:
                     success, msg = sign_up_user(email, password)
                     if success:
-                        st.success(msg)
+                        st.success("Account created successfully! You can now log in.")
                         handler.log(f"New signup: {email}")
                     else:
-                        handler.log("Sign-up failed", code="201")
-                        st.error(f"Error: {handler.respond(code='201')}")
+                        handler.log(f"Sign-up failed: {msg}", code="201")
+                        st.error("Oops! We couldn't create your account. Please ensure your password meets the requirements and you haven't already signed up.")
                 except Exception as e:
                     handler.log(f"Sign-up Crash: {e}", code="500")
-                    st.exception(e) # Prints the exact DB error so you don't have to guess
+                    st.error("Something went wrong on our end. Please try again in a moment!")
             
             else: # Login Mode
                 try:
@@ -80,15 +75,14 @@ if not st.session_state['authenticated']:
                     if success:
                         st.session_state.update({'authenticated': True, 'user_email': email})
                         handler.log(f"Login successful: {email}")
-                        st.rerun()  # Forces app to refresh and show the main app
+                        st.rerun() 
                     else:
-                        handler.log("Login failed", code="101")
-                        st.error(f"Error: {handler.respond(code='101')}")
+                        handler.log(f"Login failed: {msg}", code="101")
+                        st.error("Hmm, that email or password doesn't match our records. Please try again!")
                 except Exception as e:
                     handler.log(f"Login Crash: {e}", code="500")
-                    st.exception(e)
+                    st.error("We're having trouble connecting to the server. Please try again later!")
 
-        # Password Reset Beta Section
         with st.expander("Password Reset (Beta)"):
             st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account. If not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable you to sign up again, we will inform you once it is done. Thank you for understanding.")
     
