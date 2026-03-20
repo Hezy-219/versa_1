@@ -75,7 +75,7 @@ try:
                     if success:
                         st.success(msg)
                     else:
-                        st.error(f"Error: {handler.respond(code="201")}")
+                        st.error(f"Error: {handler.respond(code='201')}")
                 else:
                     success, msg = login(email, password)
                     if success:
@@ -282,7 +282,7 @@ try:
     user_id = get_current_user_id()
     history = supabase.table("translation_history").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
     with st.expander("Clear translation history"):
-        st.write("Are you sure?")
+        st.write("Are you sure, this wipes all account history?")
         col1, col2 = st.columns(2)
         with col1:
             if st.button("Yes", key="clear_history_confirm"):
