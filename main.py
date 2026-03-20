@@ -68,9 +68,7 @@ try:
                 type="password", 
                 help="Must be 8+ characters including letters, numbers, and symbols."
             )
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("Submit"):
+            if st.button("Submit"):
                     if auth_mode == "Sign Up":
                         success, msg = sign_up_user(email, password)
                         if success:
@@ -85,8 +83,7 @@ try:
                         else:
                             st.error("Sorry server seems too be encountering errors")
 
-            with col2:
-                with st.expander("Password Reset (Beta)"):
+            with st.expander("Password Reset (Beta)"):
                     st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account if not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable to sign up again, we will inform you once it is done.Thank you for understanding.")
         
         # 3. Stop rendering the rest of the file here
