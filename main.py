@@ -4,93 +4,96 @@ import time
 import random
 import os
 from PIL import Image
-import supabase
 
-# Import your optimized auth.py and admin panel
-# In main.py
+# Custom imports
 from auth import login, sign_up_user, get_current_user_id, supabase, clear_history
 from admin import show_admin_panel
 from utils import handler
 
-
-
 # --- CONFIGURATION ---
-# Use a relative path so it works in any environment (Linux/Cloud)
-
-
-# Get the directory of your script
-# --- CONFIGURATION ---
-# No more Image.open(), no more file path issues
 try: 
     st.set_page_config(
         page_title="VersaTranslate", 
         page_icon="🌐", 
         layout="centered"
     )
-    
-    
-    # --- RANDOM LOGIN WORDS ---
-    words = {i: msg for i, msg in enumerate([
-        "Welcome!!!", "Bienvenue!!!", "Bienvenido", "Willkommen", "いらっしゃいませ",
-        "مرحباً", "欢迎", "歡迎", "환영", "Добро пожаловать", "Boas-vindas",
-        "Benvenuto", "Welkom", "स्वागत", "Hoş geldin!", "Chào mừng", 
-        "Croeso", "Wamkelekile", "Kaabo", "Wamukelekile", "Dobrodošli"
-    ], 1)}
-    language_options = {
-        "French": "fr", "English": "en", "Spanish": "es", "Latin": "la", "German": "de", "Japanese": "ja", 
-        "Arabic": "ar", "Chinese (Simplified)": "zh-CN", "Chinese (Traditional)": "zh-TW", "Korean": "ko",
-        "Russian": "ru", "Portuguese": "pt", "Italian": "it", "Dutch": "nl", 'Hausa': 'ha', 'Hawaiian': 'haw', 'Hebrew': 'iw',
-        "Hindi": "hi", "Turkish": "tr", "Vietnamese": "vi",
-        "Welsh": "cy", "Xhosa": "xh", "Yoruba": "yo", 'igbo': 'ig', "Zulu": "zu"
-    }
-    # --- AUTH UI ---
-    # --- main.py ---
-    import streamlit as st
-    from auth import sign_up_user, login  # Ensure these are imported from your auth.py
-    
-    # 1. ALWAYS initialize session state at the very top
-    if 'authenticated' not in st.session_state:
-        st.session_state.update({'authenticated': False, 'user_email': None})
-    if 'run_words' not in st.session_state:
-        st.session_state['run_words'] = True  # This will trigger the welcome toast on login
-    
-    # 2. Authentication Block
-    if not st.session_state['authenticated']:
-        st.title("🔐 Login to VersaTranslate")
-        
-        # Using a container helps keep the layout organized and prevents rendering bugs
-        with st.container():
-            auth_mode = st.radio("Choose:", ["Login", "Sign Up"])
-            
-            # These are your input widgets
-            email = st.text_input("Username (Email)")
-            password = st.text_input(
-                "Password", 
-                type="password", 
-                help="Must be 8+ characters including letters, numbers, and symbols."
-            )
-            if st.button("Submit"):
-                    if auth_mode == "Sign Up":
-                        success, msg = sign_up_user(email, password)
-                        if success:
-                            st.success(msg)
-                        else:
-                            handler.log("Sign-up failed", code="201")
-                            st.error(f"Error: {handler.respond(code='201')}")
-                    else:
-                        success, msg = login(email, password)
-                        if success:
-                            st.session_state.update({'authenticated': True, 'user_email': email})
-                            st.rerun()  # Forces the app to refresh and show the main app
-                        else:
-                            handler.log("Login failed", code="101")
-                            st.error(f"Error: {handler.respond(code='101')}")
+except Exception:
+    pass # Prevents a crash if page_config is called twice during a rerun
 
-            with st.expander("Password Reset (Beta)"):
-                    st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account if not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable to sign up again, we will inform you once it is done.Thank you for understanding.")
+# --- DICTIONARIES ---
+words = {i: msg for i, msg in enumerate([
+    "Welcome!!!", "Bienvenue!!!", "Bienvenido", "Willkommen", "いらっしゃいませ",
+    "مرحباً", "欢迎", "歡迎", "환영", "Добро пожаловать", "Boas-vindas",
+    "Benvenuto", "Welkom", "स्वागत", "Hoş geldin!", "Chào mừng", 
+    "Croeso", "Wamkelekile", "Kaabo", "Wamukelekile", "Dobrodošli"
+], 1)}
+
+language_options = {
+    "French": "fr", "English": "en", "Spanish": "es", "Latin": "la", "German": "de", "Japanese": "ja", 
+    "Arabic": "ar", "Chinese (Simplified)": "zh-CN", "Chinese (Traditional)": "zh-TW", "Korean": "ko",
+    "Russian": "ru", "Portuguese": "pt", "Italian": "it", "Dutch": "nl", 'Hausa': 'ha', 'Hawaiian': 'haw', 'Hebrew': 'iw',
+    "Hindi": "hi", "Turkish": "tr", "Vietnamese": "vi",
+    "Welsh": "cy", "Xhosa": "xh", "Yoruba": "yo", 'igbo': 'ig', "Zulu": "zu"
+}
+
+# 1. ALWAYS initialize session state at the very top
+if 'authenticated' not in st.session_state:
+    st.session_state['authenticated'] = False
+if 'user_email' not in st.session_state:
+    st.session_state['user_email'] = None
+if 'run_words' not in st.session_state:
+    st.session_state['run_words'] = True  # Triggers the welcome toast on login
+
+# 2. Authentication Gate
+if not st.session_state['authenticated']:
+    st.title("🔐 Login to VersaTranslate")
+    
+    # Using a container helps keep the layout organized and prevents rendering bugs
+    with st.container():
+        auth_mode = st.radio("Choose:", ["Login", "Sign Up"])
         
-        # 3. Stop rendering the rest of the file here
-        st.stop()
+        # Input widgets
+        email = st.text_input("Username (Email)")
+        password = st.text_input(
+            "Password", 
+            type="password", 
+            help="Must be 8+ characters including letters, numbers, and symbols."
+        )
+        
+        if st.button("Submit"):
+            if auth_mode == "Sign Up":
+                try:
+                    success, msg = sign_up_user(email, password)
+                    if success:
+                        st.success(msg)
+                        handler.log(f"New signup: {email}")
+                    else:
+                        handler.log("Sign-up failed", code="201")
+                        st.error(f"Error: {handler.respond(code='201')}")
+                except Exception as e:
+                    handler.log(f"Sign-up Crash: {e}", code="500")
+                    st.exception(e) # Prints the exact DB error so you don't have to guess
+            
+            else: # Login Mode
+                try:
+                    success, msg = login(email, password)
+                    if success:
+                        st.session_state.update({'authenticated': True, 'user_email': email})
+                        handler.log(f"Login successful: {email}")
+                        st.rerun()  # Forces app to refresh and show the main app
+                    else:
+                        handler.log("Login failed", code="101")
+                        st.error(f"Error: {handler.respond(code='101')}")
+                except Exception as e:
+                    handler.log(f"Login Crash: {e}", code="500")
+                    st.exception(e)
+
+        # Password Reset Beta Section
+        with st.expander("Password Reset (Beta)"):
+            st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account. If not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable you to sign up again, we will inform you once it is done. Thank you for understanding.")
+    
+    # 3. Stop rendering the rest of the file here
+    st.stop()
     
     # --- Everything below this line is the main app (hidden until auth) ---
     
