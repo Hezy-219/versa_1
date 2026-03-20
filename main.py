@@ -316,6 +316,3 @@ if not st.session_state['authenticated']:
         st.markdown(f"{selected_lang_name}")
         st.write(f"Output: {item['output_text'][:100]}")
         st.divider()
-except Exception as e:
-    handler.log(e, code="500")
-    st.write(f"{e}")
