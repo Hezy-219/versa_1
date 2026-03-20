@@ -47,7 +47,7 @@ try:
     # --- AUTH UI ---
     # --- main.py ---
     import streamlit as st
-    from auth import sign_up, login  # Ensure these are imported from your auth.py
+    from auth import sign_up_user, login  # Ensure these are imported from your auth.py
     
     # 1. ALWAYS initialize session state at the very top
     if 'authenticated' not in st.session_state:
