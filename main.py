@@ -36,6 +36,7 @@ language_options = {
 # 1. ALWAYS initialize session state at the very top
 if 'authenticated' not in st.session_state:
     st.session_state['authenticated'] = False
+    st.session_state['Agree'] = False
 if 'user_email' not in st.session_state:
     st.session_state['user_email'] = None
 if 'run_words' not in st.session_state:
