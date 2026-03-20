@@ -21,7 +21,6 @@ from utils import handler
 # Get the directory of your script
 # --- CONFIGURATION ---
 # No more Image.open(), no more file path issues
-st.write("Updated version deployed successfully. Enjoy seamless translations!")
 try: 
     st.set_page_config(
         page_title="VersaTranslate", 
