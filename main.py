@@ -51,6 +51,8 @@ try:
     # 1. ALWAYS initialize session state at the very top
     if 'authenticated' not in st.session_state:
         st.session_state.update({'authenticated': False, 'user_email': None})
+    if 'run_words' not in st.session_state:
+        st.session_state['run_words'] = True  # This will trigger the welcome toast on login
     
     # 2. Authentication Block
     if not st.session_state['authenticated']:
@@ -73,6 +75,7 @@ try:
                         if success:
                             st.success(msg)
                         else:
+                            handler.log("Sign-up failed", code="201")
                             st.error(f"Error: {handler.respond(code='201')}")
                     else:
                         success, msg = login(email, password)
@@ -80,7 +83,8 @@ try:
                             st.session_state.update({'authenticated': True, 'user_email': email})
                             st.rerun()  # Forces the app to refresh and show the main app
                         else:
-                            st.error("Sorry server seems too be encountering errors")
+                            handler.log("Login failed", code="101")
+                            st.error(f"Error: {handler.respond(code='101')}")
 
             with st.expander("Password Reset (Beta)"):
                     st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account if not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable to sign up again, we will inform you once it is done.Thank you for understanding.")
