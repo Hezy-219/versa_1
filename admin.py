@@ -1,6 +1,6 @@
 import streamlit as st
 import datetime
-from auth import supabase # Import the shared supabase client
+from my_auth import supabase # Import the shared supabase client
 
 def show_admin_panel():
     st.divider()
