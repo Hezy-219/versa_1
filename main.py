@@ -93,7 +93,7 @@ if not st.session_state['authenticated']:
     # --- Everything below this line is the main app (hidden until auth) ---
     
     # --- AGREEMENT ---
-    if not st.session_state.get("Agree", False):
+if not st.session_state.get("Agree", False):
         with st.expander("Notice/Agreements"):
             st.write("We don't collect your data to train our systems. All rights reserved. We are not affilated with any organizations and futhermore aren't liable to errors within app. By using our app you agree to allowing app to view files you explicitly share.")
             col1, col2 = st.columns(2)
@@ -110,7 +110,7 @@ if not st.session_state['authenticated']:
     # --- LOGIC ---
     def event():
         if st.session_state.get("run_words"):
-            n = random.randint(1, 21)
+            n = random.randint(1, 20)
             st.toast(f"🎉 {words.get(n)}", icon="👋")
             st.session_state["run_words"] = False
     
