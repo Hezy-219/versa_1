@@ -6,7 +6,7 @@ import traceback
 import datetime
 import sys
 
-from utils import handler
+from my_utils import handler
 
 # Initialize Supabase client using environment variables
 # Streamlit automatically pulls these from the Linux environment
