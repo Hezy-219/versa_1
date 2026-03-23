@@ -85,7 +85,7 @@ if not st.session_state['authenticated']:
                             'user_email': email,
                             'user_id': uid
                             })
-                            st.rerun() 
+                        st.rerun() 
                     else:
                         handler.log(f"Login failed: {msg}", code="101")
                         st.error("Hmm, that email or password doesn't match our records. Please try again!")
