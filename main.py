@@ -227,12 +227,15 @@ if mode == "Text Input":
     
         if st.button("Translate 🚀"):
             if eng_text:
-                with st.spinner(f"Translating to {selected_lang_name}..."):
-                    time.sleep(0.3)
-                    result = perform_translation(eng_text, target_lang_code)
-                    st.subheader("Result:")
-                    st.success(result)
-                    st.caption("Translation errors may occur")
+                if len(eng_text)<4000:
+                    with st.spinner(f"Translating to {selected_lang_name}..."):
+                        time.sleep(0.3)
+                        result = perform_translation(eng_text, target_lang_code)
+                        st.subheader("Result:")
+                        st.success(result)
+                        st.caption("Translation errors may occur")
+                else:
+                    st.warning("Input is less than 4000 characters, switch to our file translator for larger translations")
             else:
                 st.warning("Please enter some text.")
 else:
@@ -253,7 +256,7 @@ else:
                                 if st.button("Yes"):
                                     with st.spinner("Hold on"):
                                         total = len(file_content)
-                                        st.write(f"Total words: {total}")
+                                        st.write(f"Total characters: {total}")
                                         process_parallel_variables(file_content, target_lang_code, uploaded_file.name, total)
                                         st.caption("Translation errors may occur")
                             with col2:
