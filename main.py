@@ -1,5 +1,5 @@
 import streamlit as st
-from auth import login, sign_up_user, get_current_user_id, supabase, clear_history
+from my_auth import login, sign_up_user, get_current_user_id, supabase, clear_history
 from admin import show_admin_panel
 from utils import handler
 import time
