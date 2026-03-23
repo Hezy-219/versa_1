@@ -302,12 +302,10 @@ with st.expander("Clear translation history"):
                 st.write("Understood")
                 time.sleep(1)
                 st.rerun()
-                
-                
-    
-    for item in history.data:
-        st.markdown(f"**Lang:** `{item['target_lang']}`")
-        st.write(f"📝 {item['input_text'][:100]}")
-        st.markdown(f"{selected_lang_name}")
-        st.write(f"Output: {item['output_text'][:100]}")
-        st.divider()
+            
+for item in history.data:
+            st.markdown(f"**Lang:** `{item['target_lang']}`")
+            st.write(f"📝 {item['input_text'][:100]}")
+            st.markdown(f"{selected_lang_name}")
+            st.write(f"Output: {item['output_text'][:100]}")
+            st.divider()
