@@ -108,15 +108,15 @@ if not st.session_state.get("Agree", False):
         st.stop()
     
     # --- LOGIC ---
-    def event():
+def event():
         if st.session_state.get("run_words"):
             n = random.randint(1, 20)
             st.toast(f"🎉 {words.get(n)}", icon="👋")
             st.session_state["run_words"] = False
     
-    st.title("🌐 VersaTranslate")
-    event()
-    def process_parallel_variables(text, code, name, total, limit=4000):
+st.title("🌐 VersaTranslate")
+event()
+def process_parallel_variables(text, code, name, total, limit=4000):
         try:
             # Split the original into a list of chunks
             original_chunks = [text[i:i+limit] for i in range(0, len(text), limit)]
@@ -155,7 +155,7 @@ if not st.session_state.get("Agree", False):
             st.stop
             st.write("An error occured. Try again later")
     
-    def perform_translation_chunk(text, target_lang):
+def perform_translation_chunk(text, target_lang):
         try:
             translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
             return translated_text
@@ -164,7 +164,7 @@ if not st.session_state.get("Agree", False):
     
     
     # --- NEW SUPABASE TRANSLATION LOGIC ---
-    def perform_translation(text, target_lang):
+def perform_translation(text, target_lang):
         try:
             translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
             user_id = get_current_user_id()
@@ -182,7 +182,7 @@ if not st.session_state.get("Agree", False):
             return "An error ocurred during translation"
     
     # --- SIDEBAR & HISTORY (Updated for Supabase) ---
-    with st.sidebar:
+with st.sidebar:
         st.write(f"Logged in as: {st.session_state['user_email']}")
     
         # --- ADMIN PANEL GATED ACCESS ---
@@ -219,9 +219,9 @@ if not st.session_state.get("Agree", False):
         st.divider()
         st.write("Versions supported: v1.0.1")
     
-    mode = st.radio("Choose Translation Method:", ["Text Input", "File Upload"], horizontal=True)
+mode = st.radio("Choose Translation Method:", ["Text Input", "File Upload"], horizontal=True)
     
-    if mode == "Text Input":
+if mode == "Text Input":
         st.subheader(f"Translate to {selected_lang_name}")
         eng_text = st.text_area("Enter text to translate:", height=150)
     
@@ -235,7 +235,7 @@ if not st.session_state.get("Agree", False):
                     st.caption("Translation errors may occur")
             else:
                 st.warning("Please enter some text.")
-    else:
+else:
         # --- FILE UPLOAD LOGIC ---
         st.subheader(f"Translate .txt File to {selected_lang_name}")
         uploaded_file = st.file_uploader("Choose a TXT file", type="txt", help="Max size: 5MB")
@@ -281,10 +281,10 @@ if not st.session_state.get("Agree", False):
                                 )
     
     # --- HISTORY DISPLAY ---
-    st.subheader("Your Translation History")
-    user_id = get_current_user_id()
-    history = supabase.table("translation_history").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
-    with st.expander("Clear translation history"):
+st.subheader("Your Translation History")
+user_id = get_current_user_id()
+history = supabase.table("translation_history").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
+with st.expander("Clear translation history"):
         st.write("Are you sure, this wipes all account history?")
         col1, col2 = st.columns(2)
         with col1:
