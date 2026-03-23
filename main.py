@@ -73,10 +73,19 @@ if not st.session_state['authenticated']:
             else: # Login Mode
                 try:
                     success, msg = login(email, password)
+                    # Inside your Login button logic:
+                    success, msg = login(email, password)
                     if success:
-                        st.session_state.update({'authenticated': True, 'user_email': email})
-                        handler.log(f"Login successful: {email}")
-                        st.rerun() 
+    # This call triggers the 'save' inside the new get_current_user_id()
+                        st.success("Hold on")
+                        uid = get_current_user_id() 
+    
+                        st.session_state.update({
+                            'authenticated': True, 
+                            'user_email': email,
+                            'user_id': uid
+                            })
+                            st.rerun() 
                     else:
                         handler.log(f"Login failed: {msg}", code="101")
                         st.error("Hmm, that email or password doesn't match our records. Please try again!")
