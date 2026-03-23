@@ -316,8 +316,28 @@ with st.expander("Clear translation history"):
                 st.rerun()
             
 for item in history.data:
-            st.markdown(f"**Lang:** `{item['target_lang']}`")
-            st.write(f"📝 {item['input_text'][:100]}")
-            st.markdown(f"{selected_lang_name}")
-            st.write(f"Output: {item['output_text'][:100]}")
-            st.divider()
+            target_id = get_current_user_id()
+
+            if target_id:
+                try:
+                    # The query now has a guaranteed UUID to look for
+                    response = supabase.table("translation_history")\
+                        .select("*")\
+                        .eq("user_id", target_id)\
+                        .order("created_at", desc=True)\
+                        .execute()
+                        
+                    history = response.data
+                    
+                    with st.expander("Translation History"):
+                        if not history:
+                            st.info("No saved translations yet.")
+                        else:
+                            for entry in history:
+                                st.write(f"**{entry['source_lang']} → {entry['target_lang']}:**")
+                                st.code(entry['translated_text'])
+                                st.divider()
+            
+                except Exception as e:
+                    handler.log(f"DB Fetch Error: {e}")
+                    st.error("Could not sync with database.")
