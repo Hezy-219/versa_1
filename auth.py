@@ -45,12 +45,22 @@ def login(email, password):
         st.write(e)
 
 def get_current_user_id():
-    """Retrieves the secure UUID of the logged-in user."""
-    user = supabase.auth.get_user()
-    if user:
-        return user.user.id
+    """Retrieves the UUID, checking session state first to bypass Streamlit's 'amnesia'."""
+    # Check if we already saved it in this session
+    if 'user_id' in st.session_state and st.session_state['user_id']:
+        return st.session_state['user_id']
+    
+    # If not in state, try to get it from the Supabase client
+    try:
+        res = supabase.auth.get_user()
+        if res and res.user:
+            # Save it to state immediately for the next rerun
+            st.session_state['user_id'] = res.user.id
+            return res.user.id
+    except Exception:
+        pass
+        
     return None
-target_id = get_current_user_id()
 
 # --- auth.py ---
 def clear_history():
