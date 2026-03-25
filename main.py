@@ -1,4 +1,5 @@
 import streamlit as st
+from deep_translator import GoogleTranslator
 from my_auth import login, sign_up_user, get_current_user_id, supabase, clear_history
 from admin import show_admin_panel
 from my_utils import handler
