@@ -338,7 +338,7 @@ with st.expander("Translation History"):
                     st.info("No saved translations yet.")
                 else:
                     for entry in history:
-                        st.write(f"**{entry['source_lang']} → {entry['target_lang']}:**")
+                        st.write(f"**You translated to:→{entry['target_lang']}:**")
                         st.code(entry['output_text'])
                         st.divider()
                 
