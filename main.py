@@ -317,7 +317,7 @@ with st.expander("Clear translation history"):
                 st.write("Understood")
                 time.sleep(1)
                 st.rerun()
-with st.expander("Translation History"):            
+with st.expander("Translation History"):
     for item in history.data:
                 target_id = get_current_user_id()
     
