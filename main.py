@@ -234,7 +234,7 @@ with st.sidebar:
                 "201 : Sign up error, conflicting User sign up details in database i.e User may already exist",
                 "203 : Translation error"
             ]
-            st.write(
+            st.code(
                 un_long[0],
                 un_long[1],
                 un_long[2],
