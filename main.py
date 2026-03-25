@@ -225,7 +225,7 @@ with st.sidebar:
 
         st.divider()
         with st.expander("E.Q (Expected Questions)"):
-            un_long = {
+            un_long = [
                 "To maintain seamless translations we use different codes within the app some to alert errors to system and others are meanings of your input, therefore, we have decided to share the meanings of a few of them.",
                 "At times our error renderer might not render an error in human readable language, it will most likely revert to numbers: Error codes:",
                 "500 : Error within main User Interface",
@@ -233,7 +233,7 @@ with st.sidebar:
                 "108 : Sign up error due to password being too short",
                 "201 : Sign up error, conflicting User sign up details in database i.e User may already exist",
                 "203 : Translation error"
-    }
+            ]
             st.write(
                 un_long[0],
                 un_long[1],
