@@ -184,7 +184,7 @@ def perform_translation(text, target_lang):
                 "user_id": user_id,
                 "input_text": text,
                 "output_text": translated_text,
-                "target_lang": target_lang
+                "target_lang": target_lang,
             }).execute()
             
             return translated_text
