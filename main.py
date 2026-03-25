@@ -317,29 +317,31 @@ with st.expander("Clear translation history"):
                 st.write("Understood")
                 time.sleep(1)
                 st.rerun()
-with st.expander("Translation History"):
+
+
+with st.expander("Translation History:)
     for item in history.data:
-                target_id = get_current_user_id()
+        target_id = get_current_user_id()
     
-                if target_id:
-                    try:
+        if target_id:
+            try:
                         # The query now has a guaranteed UUID to look for
-                        response = supabase.table("translation_history")\
-                            .select("*")\
-                            .eq("user_id", target_id)\
-                            .order("created_at", desc=True)\
-                            .execute()
+                response = supabase.table("translation_history")\
+                    .select("*")\
+                    .eq("user_id", target_id)\
+                    .order("created_at", desc=True)\
+                    .execute()
                             
-                        history = response.data
+                history = response.data
                         
-                            if not history:
-                                st.info("No saved translations yet.")
-                            else:
-                                for entry in history:
-                                    st.write(f"**{entry['source_lang']} → {entry['target_lang']}:**")
-                                    st.code(entry['output_text'])
-                                    st.divider()
+                if not history:
+                    st.info("No saved translations yet.")
+                else:
+                    for entry in history:
+                        st.write(f"**{entry['source_lang']} → {entry['target_lang']}:**")
+                        st.code(entry['output_text'])
+                        st.divider()
                 
-                    except Exception as e:
-                        handler.log(f"DB Fetch Error: {e}")
-                        st.error("Could not sync with database.")
+            except Exception as e:
+                handler.log(f"DB Fetch Error: {e}")
+                st.error("Could not sync with database.")
