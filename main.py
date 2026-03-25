@@ -338,7 +338,7 @@ for item in history.data:
                         else:
                             for entry in history:
                                 st.write(f"**{entry['source_lang']} → {entry['target_lang']}:**")
-                                st.code(entry['translated_text'])
+                                st.code(entry['output_text'])
                                 st.divider()
             
                 except Exception as e:
