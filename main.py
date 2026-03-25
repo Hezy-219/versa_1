@@ -360,7 +360,7 @@ with st.expander("Translation History"):
                 else:
                     for entry in history:
                         st.write(f"**You translated to: {entry['target_lang']}**")
-                        st.code(f"Output: {entry['output_text']})
+                        st.code(f"Output: {entry['output_text']}")
                         st.divider()
                 
             except Exception as e:
