@@ -225,13 +225,24 @@ with st.sidebar:
 
         st.divider()
     with st.expander("E.Q (Expected Questions)"):
-        st.write("To maintain seamless translations we use different codes within the app some to alert errors to system and others are meanings of your input, therefore, we have decided to share the meanings of a few of them")
-        st.write("At times our error renderer might not render an error in human readable language, it will most likely revert to numbers: Error codes:")
-        st.write("500 : Error within main User Interface")
-        st.write("101 : Login error, likely to be within password credentials area")
-        st.write("108 : Sign up error due to password being too short")
-        st.write("201 : Sign up error, conflictig User sign up details in database i.e User may already exist")
-        st.write("203 : Translation error")
+        un_long = {
+            "To maintain seamless translations we use different codes within the app some to alert errors to system and others are meanings of your input, therefore, we have decided to share the meanings of a few of them.
+            "At times our error renderer might not render an error in human readable language, it will most likely revert to numbers: Error codes:"
+            "500 : Error within main User Interface"
+            "101 : Login error, likely to be within password credentials area"
+            "108 : Sign up error due to password being too short
+            "201 : Sign up error, conflicting User sign up details in database i.e User may already exist"
+            "203 : Translation error"
+}
+        st.write(
+            un_long[0],
+            un_long[1],
+            un_long[2],
+            un_long[3],
+            un_long[4],
+            un_long[5],
+            un_long[6]
+             )
         
         st.divider()
         if st.button("Logout"):
