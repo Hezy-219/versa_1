@@ -188,6 +188,7 @@ def perform_translation(text, target_lang):
             
             return translated_text
         except Exception as e:
+            translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
             print(translated_text)
             st.write(translated_text)
             return "An error ocurred during saving"
