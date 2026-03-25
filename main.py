@@ -188,7 +188,9 @@ def perform_translation(text, target_lang):
             
             return translated_text
         except Exception as e:
-            return "An error ocurred during translation"
+            print(translated_text)
+            st.write(translated_text)
+            return "An error ocurred during saving"
     
     # --- SIDEBAR & HISTORY (Updated for Supabase) ---
 with st.sidebar:
