@@ -222,6 +222,16 @@ with st.sidebar:
         st.divider()
         with st.expander("Expected Updates"):
             st.write("Due to a possible constriction in resources, app may go through changes, we will try as much as possible to maintain how it is right now but you may expect a possible phase of commercialization (Pro tier and an inclusive free tier), we are also testing a beta feature to ensure graceful failures(we will present games incase of errors that may occur in servers or games, NOTE: This is a beta feature and won't be added until it is ready). Our plans or expectations may change at any point.")
+
+        st.divider()
+    with st.expander("E.Q (Expected Questions)"):
+        st.write("To maintain seamless translations we use different codes within the app some to alert errors to system and others are meanings of your input, therefore, we have decided to share the meanings of a few of them")
+        st.write("At times our error renderer might not render an error in human readable language, it will most likely revert to numbers: Error codes:")
+        st.write("500 : Error within main User Interface")
+        st.write("101 : Login error, likely to be within password credentials area")
+        st.write("108 : Sign up error due to password being too short")
+        st.write("201 : Sign up error, conflictig User sign up details in database i.e User may already exist")
+        st.write("203 : Translation error")
         
         st.divider()
         if st.button("Logout"):
@@ -338,7 +348,7 @@ with st.expander("Translation History"):
                     st.info("No saved translations yet.")
                 else:
                     for entry in history:
-                        st.write(f"**You translated to:→{entry['target_lang']}:**")
+                        st.write(f"**You translated to: {entry['target_lang']}:**")
                         st.code(entry['output_text'])
                         st.divider()
                 
