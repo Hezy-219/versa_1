@@ -359,8 +359,8 @@ with st.expander("Translation History"):
                     st.info("No saved translations yet.")
                 else:
                     for entry in history:
-                        st.write(f"**You translated to: {entry['target_lang']}:**")
-                        st.code(entry['output_text'])
+                        st.write(f"**You translated to: {entry['target_lang']}**")
+                        st.code(f"Output: {entry['output_text']})
                         st.divider()
                 
             except Exception as e:
