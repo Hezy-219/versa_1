@@ -288,9 +288,13 @@ else:
                             with col1:
                                 if st.button("Yes"):
                                     with st.spinner("Hold on"):
+                                        start = time.perf_counter()
                                         total = len(file_content)
                                         st.write(f"Total characters: {total}")
                                         process_parallel_variables(file_content, target_lang_code, uploaded_file.name, total)
+                                        end = time.perf_counter()
+                                        total = end - start
+                                        st.write(f"It took {end:.6f} seconds to translate the file") 
                                         st.caption("Translation errors may occur")
                             with col2:
                                 if st.button("No"):
