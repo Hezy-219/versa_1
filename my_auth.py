@@ -32,7 +32,6 @@ def sign_up_user(email, password):
             return True, "Success"
     except Exception as e:
         handler.log("Error during sign-up", code="201")
-        st.write(e)
 
 def login(email, password):
     """Handles user login via Supabase Auth."""
@@ -42,7 +41,7 @@ def login(email, password):
             return True, "Login successful!"
         return False, "Invalid email or password."
     except Exception as e:
-        st.write(e)
+        handler.log("Error during login", code='101')
 
 def get_current_user_id():
     """Retrieves the UUID, checking session state first to bypass Streamlit's 'amnesia'."""
@@ -77,4 +76,4 @@ def clear_history():
         )
         return True, "History cleared successfully!"
     except Exception as e:
-        return False, f"Database error: {e}"
+        return False, f"Database error"
