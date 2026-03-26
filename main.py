@@ -92,7 +92,7 @@ if not st.session_state['authenticated']:
                         st.error("Hmm, that email or password doesn't match our records. Please try again!")
                 except Exception as e:
                     handler.log(f"Login Crash: {e}", code="500")
-                    st.error("We're having trouble connecting to the server. Please try again later!")
+                    st.error("We're having trouble connecting to the server, this could also be due to invalid passwords or emails. Please try again later!")
 
         with st.expander("Password Reset (Beta)"):
             st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account. If not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable you to sign up again, we will inform you once it is done. Thank you for understanding.")
