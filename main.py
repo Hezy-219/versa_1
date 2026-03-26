@@ -69,7 +69,7 @@ if not st.session_state['authenticated']:
                         st.error("Oops! We couldn't create your account. Please ensure your password meets the requirements and you haven't already signed up.")
                 except Exception as e:
                     handler.log(f"Sign-up Crash: {e}", code="500")
-                    st.error("Something went wrong on our end. Please try again in a moment!")
+                    st.error("Something went wrong on our end. Please try again in a moment! Also, check your emails as that could be invalid.")
             
             else: # Login Mode
                 try:
