@@ -68,8 +68,8 @@ if not st.session_state['authenticated']:
                         handler.log(f"Sign-up failed: {msg}", code="201")
                         st.error("Oops! We couldn't create your account. Please ensure your password meets the requirements and you haven't already signed up.")
                 except Exception as e:
-                    handler.log(f"Sign-up Crash: {e}", code="500")
-                    st.error("Something went wrong on our end. Please try again in a moment! Also, check your emails as that could be invalid.")
+                    handler.log(f"Sign-up Crash: {e}", code="201")
+                    handler.respond(code='201')
             
             else: # Login Mode
                 try:
@@ -91,8 +91,8 @@ if not st.session_state['authenticated']:
                         handler.log(f"Login failed: {msg}", code="101")
                         st.error("Hmm, that email or password doesn't match our records. Please try again!")
                 except Exception as e:
-                    handler.log(f"Login Crash: {e}", code="500")
-                    st.error("We're having trouble connecting to the server, this could also be due to invalid passwords or emails. Please try again later!")
+                    handler.log(f"Login Crash: {e}", code="101")
+                    handler.respond(code='101')
 
         with st.expander("Password Reset (Beta)"):
             st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account. If not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable you to sign up again, we will inform you once it is done. Thank you for understanding.")
