@@ -250,7 +250,7 @@ with st.sidebar:
             st.session_state['user_email'] = None
             st.rerun()
         st.divider()
-        st.write("Versions supported: v1.0.1")
+        st.write("Versions supported: v1.1.1")
     
 mode = st.radio("Choose Translation Method:", ["Text Input", "File Upload"], horizontal=True)
     
