@@ -347,37 +347,32 @@ try:
     
     
     # 1. Fetching Logic (Optimized for speed)
-    def get_history_df(user_id):
-        try:
-            response = supabase.table("translation_history") \
-                .select("target_lang, output_text, created_at") \
-                .eq("user_id", user_id) \
-                .order("created_at", desc=True) \
-                .limit(10) \
-                .execute()
-            
-            if response.data:
-                # Convert to DataFrame for that "Finer" table look
-                df = pd.DataFrame(response.data)
-                # Clean up column names for the UI
-                df.columns = ["Language", "Translation", "Timestamp"]
-                return df
-            return pd.DataFrame()
-        except Exception as e:
-            handler.log(f"History Fetch Error: {e}")
-            return pd.DataFrame()
+   with st.expander("Translation History"):
+    for item in history.data:
+        target_id = get_current_user_id()
     
-    # 2. The UI Display
-    with st.expander("📜 Translation History", expanded=True):
-        for entry in history_list:
-            # This creates a "card" effect
-            with st.container(border=True):
-                col1, col2 = st.columns([1, 4])
-                with col1:
-                    st.markdown(f"**{entry['target_lang']}**")
-                    st.caption(f"{entry['created_at'][:10]}") # Show just the date
-                with col2:
-                    st.info(entry['output_text']) # Colored box for the translation
+        if target_id:
+            try:
+                        # The query now has a guaranteed UUID to look for
+                response = supabase.table("translation_history")\
+                    .select("*")\
+                    .eq("user_id", target_id)\
+                    .order("created_at", desc=True)\
+                    .execute()
+                            
+                history = response.data
+                        
+                if not history:
+                    st.info("No saved translations yet.")
+                else:
+                    for entry in history:
+                        st.write(f"**You translated to: {entry['target_lang']}**")
+                        st.code(f"Output: {entry['output_text']}")
+                        st.divider()
+                
+            except Exception as e:
+                handler.log(f"DB Fetch Error: {e}")
+                st.error("Could not sync with database.")
 
 except Exception as e:
     handler.log(f"Script Crash Crash: {e}", code="500")
