@@ -338,7 +338,8 @@ try:
                             st.success(message)
                             st.rerun()
                         else:
-                                st.error(message) # Show the error nicely in the UI# Refresh only if the operation actually succeeded
+                            handler.log(f"Crash during History clearing: {e}", code="500")# Show the error nicely in the UI# Refresh only if the operation actually succeeded
+                            handler.respond(code="500")
             with col2:
                 if st.button("No", key="n0_clear_history"):
                     st.write("Understood")
