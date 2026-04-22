@@ -347,9 +347,9 @@ try:
     
     
     # 1. Fetching Logic (Optimized for speed)
-   with st.expander("Translation History"):
-    for item in history.data:
-        target_id = get_current_user_id()
+    with st.expander("Translation History"):
+        for item in history.data:
+            target_id = get_current_user_id()
     
         if target_id:
             try:
