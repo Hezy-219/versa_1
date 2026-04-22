@@ -9,371 +9,376 @@ import random
 import os
 from PIL import Image
 
+try:
 # --- CONFIGURATION ---
-try: 
-    st.set_page_config(
-        page_title="VersaTranslate", 
-        page_icon="🌐", 
-        layout="centered"
-    )
-except Exception:
-    pass # Prevents a crash if page_config is called twice during a rerun
-
-# --- DICTIONARIES ---
-words = {i: msg for i, msg in enumerate([
-    "Welcome!!!", "Bienvenue!!!", "Bienvenido", "Willkommen", "いらっしゃいませ",
-    "مرحباً", "欢迎", "歡迎", "환영", "Добро пожаловать", "Boas-vindas",
-    "Benvenuto", "Welkom", "स्वागत", "Hoş geldin!", "Chào mừng", 
-    "Croeso", "Wamkelekile", "Kaabo", "Wamukelekile", "Dobrodošli"
-], 1)}
-
-language_options = {
-    "French": "fr", "English": "en", "Spanish": "es", "Latin": "la", "German": "de", "Japanese": "ja", 
-    "Arabic": "ar", "Chinese (Simplified)": "zh-CN", "Chinese (Traditional)": "zh-TW", "Korean": "ko",
-    "Russian": "ru", "Portuguese": "pt", "Italian": "it", "Dutch": "nl", 'Hausa': 'ha', 'Hawaiian': 'haw', 'Hebrew': 'iw',
-    "Hindi": "hi", "Turkish": "tr", "Vietnamese": "vi",
-    "Welsh": "cy", "Xhosa": "xh", "Yoruba": "yo", 'igbo': 'ig', "Zulu": "zu"
-}
-
-# 1. ALWAYS initialize session state at the very top
-if 'authenticated' not in st.session_state:
-    st.session_state['authenticated'] = False
-    st.session_state['Agree'] = False
-if 'user_email' not in st.session_state:
-    st.session_state['user_email'] = None
-if 'run_words' not in st.session_state:
-    st.session_state['run_words'] = True
-
-# 2. Authentication Gate
-if not st.session_state['authenticated']:
-    st.title("🔐 Login to VersaTranslate")
-    
-    with st.container():
-        auth_mode = st.radio("Choose:", ["Login", "Sign Up"])
-        
-        email = st.text_input("Username (Email)")
-        password = st.text_input(
-            "Password", 
-            type="password", 
-            help="Must be 8+ characters including letters, numbers, and symbols."
+    try: 
+        st.set_page_config(
+            page_title="VersaTranslate", 
+            page_icon="🌐", 
+            layout="centered"
         )
+    except Exception:
+        pass # Prevents a crash if page_config is called twice during a rerun
+    
+    # --- DICTIONARIES ---
+    words = {i: msg for i, msg in enumerate([
+        "Welcome!!!", "Bienvenue!!!", "Bienvenido", "Willkommen", "いらっしゃいませ",
+        "مرحباً", "欢迎", "歡迎", "환영", "Добро пожаловать", "Boas-vindas",
+        "Benvenuto", "Welkom", "स्वागत", "Hoş geldin!", "Chào mừng", 
+        "Croeso", "Wamkelekile", "Kaabo", "Wamukelekile", "Dobrodošli"
+    ], 1)}
+    
+    language_options = {
+        "French": "fr", "English": "en", "Spanish": "es", "Latin": "la", "German": "de", "Japanese": "ja", 
+        "Arabic": "ar", "Chinese (Simplified)": "zh-CN", "Chinese (Traditional)": "zh-TW", "Korean": "ko",
+        "Russian": "ru", "Portuguese": "pt", "Italian": "it", "Dutch": "nl", 'Hausa': 'ha', 'Hawaiian': 'haw', 'Hebrew': 'iw',
+        "Hindi": "hi", "Turkish": "tr", "Vietnamese": "vi",
+        "Welsh": "cy", "Xhosa": "xh", "Yoruba": "yo", 'igbo': 'ig', "Zulu": "zu"
+    }
+    
+    # 1. ALWAYS initialize session state at the very top
+    if 'authenticated' not in st.session_state:
+        st.session_state['authenticated'] = False
+        st.session_state['Agree'] = False
+    if 'user_email' not in st.session_state:
+        st.session_state['user_email'] = None
+    if 'run_words' not in st.session_state:
+        st.session_state['run_words'] = True
+    
+    # 2. Authentication Gate
+    if not st.session_state['authenticated']:
+        st.title("🔐 Login to VersaTranslate")
         
-        if st.button("Submit"):
-            if auth_mode == "Sign Up":
-                try:
-                    success, msg = sign_up_user(email, password)
-                    if success:
-                        st.success("Account created successfully! You can now log in.")
-                        handler.log(f"New signup: {email}")
-                    else:
-                        handler.log(f"Sign-up failed: {msg}", code="201")
-                        st.error("Oops! We couldn't create your account. Please ensure your password meets the requirements and you haven't already signed up.")
-                except Exception as e:
-                    handler.log(f"Sign-up Crash: {e}", code="201")
-                    handler.respond(code='201')
+        with st.container():
+            auth_mode = st.radio("Choose:", ["Login", "Sign Up"])
             
-            else: # Login Mode
-                try:
-                    success, msg = login(email, password)
-                    # Inside your Login button logic:
-                    success, msg = login(email, password)
-                    if success:
-    # This call triggers the 'save' inside the new get_current_user_id()
-                        st.success("Hold on")
-                        uid = get_current_user_id() 
+            email = st.text_input("Username (Email)")
+            password = st.text_input(
+                "Password", 
+                type="password", 
+                help="Must be 8+ characters including letters, numbers, and symbols."
+            )
+            
+            if st.button("Submit"):
+                if auth_mode == "Sign Up":
+                    try:
+                        success, msg = sign_up_user(email, password)
+                        if success:
+                            st.success("Account created successfully! You can now log in.")
+                            handler.log(f"New signup: {email}")
+                        else:
+                            handler.log(f"Sign-up failed: {msg}", code="201")
+                            st.error("Oops! We couldn't create your account. Please ensure your password meets the requirements and you haven't already signed up.")
+                    except Exception as e:
+                        handler.log(f"Sign-up Crash: {e}", code="201")
+                        handler.respond(code='201')
+                
+                else: # Login Mode
+                    try:
+                        success, msg = login(email, password)
+                        # Inside your Login button logic:
+                        success, msg = login(email, password)
+                        if success:
+        # This call triggers the 'save' inside the new get_current_user_id()
+                            st.success("Hold on")
+                            uid = get_current_user_id() 
+        
+                            st.session_state.update({
+                                'authenticated': True, 
+                                'user_email': email,
+                                'user_id': uid
+                                })
+                            st.rerun() 
+                        else:
+                            handler.log(f"Login failed: {msg}", code="101")
+                            st.error("Hmm, that email or password doesn't match our records. Please try again!")
+                    except Exception as e:
+                        handler.log(f"Login Crash: {e}", code="101")
+                        handler.respond(code='101')
     
-                        st.session_state.update({
-                            'authenticated': True, 
-                            'user_email': email,
-                            'user_id': uid
-                            })
-                        st.rerun() 
+            with st.expander("Password Reset (Beta)"):
+                st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account. If not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable you to sign up again, we will inform you once it is done. Thank you for understanding.")
+        
+        # 3. Stop rendering the rest of the file here
+        st.stop()
+        
+        # --- Everything below this line is the main app (hidden until auth) ---
+        
+        # --- AGREEMENT ---
+    if not st.session_state.get("Agree", False):
+            with st.expander("Notice/Agreements"):
+                st.write("We don't collect your data to train our systems. All rights reserved. We are not affilated with any organizations and futhermore aren't liable to errors within app. By using our app you agree to allowing app to view files you explicitly share.")
+                col1, col2 = st.columns(2)
+                with col1:
+                    if st.button("Yes"):
+                        st.session_state["Agree"] = True
+                        st.rerun()
+                with col2:
+                    if st.button("No"):
+                        st.session_state['authenticated'] = False
+                        st.rerun()
+            st.stop()
+        
+        # --- LOGIC ---
+    def event():
+            if st.session_state.get("run_words"):
+                n = random.randint(1, 20)
+                st.toast(f"🎉 {words.get(n)}", icon="👋")
+                st.session_state["run_words"] = False
+        
+    st.title("🌐 VersaTranslate")
+    event()
+    def process_parallel_variables(text, code, name, total, limit=4000):
+            try:
+                # Split the original into a list of chunks
+                original_chunks = [text[i:i+limit] for i in range(0, len(text), limit)]
+                translated_chunks = []
+                
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+                
+                for i, chunk in enumerate(original_chunks):
+                    status_text.text(f"Processing segment {i+1} of {len(original_chunks)}...")
+                    
+                    
+                    # 1. Translate the chunk
+                    t_chunk = perform_translation_chunk(chunk, code) 
+                    translated_chunks.append(t_chunk)
+                    
+                    # 2. Update Progress
+                    progress_bar.progress((i + 1) / len(original_chunks))
+                    
+                # 3. Concatenate everything at the end
+                final_original = "".join(original_chunks)
+                final_translated = "".join(translated_chunks)
+                # Instead of save_to_supabase(full_orig, full_trans):
+                st.divider()
+                st.success("Translation complete!")
+            
+            # Prepare the data for download
+        
+                st.download_button(
+                        label="Download Translation",
+                        data=final_translated,
+                        file_name=f"Versatranslate_v1_demo_{name}",
+                        mime="text/plain"
+                )
+            except Exception as e:
+                st.stop
+                st.write("An error occured. Try again later")
+        
+    def perform_translation_chunk(text, target_lang):
+            try:
+                translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
+                return translated_text
+            except Exception as e:
+                return "An error ocurred during translation"
+        
+        
+        # --- NEW SUPABASE TRANSLATION LOGIC ---
+    def perform_translation(text, target_lang):
+            try:
+                translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
+                user_id = get_current_user_id()
+                
+                # Save to Supabase 'translation_history' table
+                supabase.table("translation_history").insert({
+                    "user_id": user_id,
+                    "input_text": text,
+                    "output_text": translated_text,
+                    "target_lang": target_lang,
+                }).execute()
+                
+                return translated_text
+            except Exception as e:
+                translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
+                st.write(translated_text)
+                return "An error ocurred during saving"
+        
+        # --- SIDEBAR & HISTORY (Updated for Supabase) ---
+    with st.sidebar:
+            st.write(f"Logged in as: {st.session_state['user_email']}")
+        
+            # --- ADMIN PANEL GATED ACCESS ---
+            # Replace with your email to access admin tools
+            if st.session_state['user_email'] == "irekiigbeayoolorunnimi@gmail.com":
+                show_admin_panel()
+        
+            st.divider()
+            st.header("Settings")
+            selected_lang_name = st.selectbox("Choose Target Language:", options=list(language_options.keys()))
+            target_lang_code = language_options[selected_lang_name]
+    
+            st.divider()
+            with st.expander("About us"):
+                st.write("We are company named Silktorch founded in Canada, this app is made to ease the worries of translation offering text uploads and our very own file upload doesn't sound special right but it works! Contact us at vulnerability.report.maximillian@gmail.com . We are open to suggestions and we strive to respond to your emails within a minimum of 48 hours and a maximum of a week(don't worry, this has never happened).Thank you for using our app. NOTE: complaints are treated as suggestions.")
+    
+            st.divider()
+            with st.expander("Contact us"):
+                st.write("You can contact us at vulnerability.report.maximillian@gmail.com, we are open to any of your suggestionsand we will respond as soon as possible specifically by 48 hours")
+    
+            st.divider()
+            with st.expander("Purpose"):
+                st.write("This application is created to gain the trust for our other updates and other apps in work.")
+    
+            st.divider()
+            with st.expander("Expected Updates"):
+                st.write("Due to a possible constriction in resources, app may go through changes, we will try as much as possible to maintain how it is right now but you may expect a possible phase of commercialization (Pro tier and an inclusive free tier), we are also testing a beta feature to ensure graceful failures(we will present games incase of errors that may occur in servers or games, NOTE: This is a beta feature and won't be added until it is ready). Our plans or expectations may change at any point.")
+    
+            st.divider()
+            with st.expander("E.Q (Expected Questions)"):
+                un_long = [
+                    "\nTo maintain seamless translations we use different codes within the app some to alert errors to system and others are meanings of your input, therefore, we have decided to share the meanings of a few of them.",
+                    "\nAt times our error renderer might not render an error in human readable language, it will most likely revert to numbers: Error codes:",
+                    "\n500 : Error within main User Interface",
+                    "\n101 : Login error, likely to be within password credentials area",
+                    "\n108 : Sign up error due to password being too short",
+                    "\n201 : Sign up error, conflicting User sign up details in database i.e User may already exist",
+                    "\n203 : Translation error"
+                ]
+                st.write(
+                    un_long[0],
+                    un_long[1],
+                    un_long[2],
+                    un_long[3],
+                    un_long[4],
+                    un_long[5],
+                    un_long[6]
+                     )
+            
+            st.divider()
+            if st.button("Logout"):
+                st.session_state['authenticated'] = False
+                st.session_state['user_email'] = None
+                st.rerun()
+            st.divider()
+            st.write("Versions supported: v1.1.1")
+        
+    mode = st.radio("Choose Translation Method:", ["Text Input", "File Upload"], horizontal=True)
+        
+    if mode == "Text Input":
+            st.subheader(f"Translate to {selected_lang_name}")
+            eng_text = st.text_area("Enter text to translate:", height=150)
+        
+            if st.button("Translate 🚀"):
+                if eng_text:
+                    if len(eng_text)<4000:
+                        with st.spinner(f"Translating to {selected_lang_name}..."):
+                            time.sleep(0.3)
+                            result = perform_translation(eng_text, target_lang_code)
+                            st.subheader("Result:")
+                            st.success(result)
+                            st.caption("Translation errors may occur")
                     else:
-                        handler.log(f"Login failed: {msg}", code="101")
-                        st.error("Hmm, that email or password doesn't match our records. Please try again!")
-                except Exception as e:
-                    handler.log(f"Login Crash: {e}", code="101")
-                    handler.respond(code='101')
-
-        with st.expander("Password Reset (Beta)"):
-            st.write("This works manually, so contact us at vulnerability.report.maximilian@gmail.com, we will try to send a recovery link to reset your account. If not possible we would revert to our only solution which is deleting your accounts. NOTE: Translations and Email are deleted to enable you to sign up again, we will inform you once it is done. Thank you for understanding.")
-    
-    # 3. Stop rendering the rest of the file here
-    st.stop()
-    
-    # --- Everything below this line is the main app (hidden until auth) ---
-    
-    # --- AGREEMENT ---
-if not st.session_state.get("Agree", False):
-        with st.expander("Notice/Agreements"):
-            st.write("We don't collect your data to train our systems. All rights reserved. We are not affilated with any organizations and futhermore aren't liable to errors within app. By using our app you agree to allowing app to view files you explicitly share.")
+                        st.warning("Input is less than 4000 characters, switch to our file translator for larger translations")
+                else:
+                    st.warning("Please enter some text.")
+    else:
+            # --- FILE UPLOAD LOGIC ---
+            st.subheader(f"Translate .txt File to {selected_lang_name}")
+            uploaded_file = st.file_uploader("Choose a TXT file", type="txt", help="Max size: 5MB")
+        
+            if uploaded_file is not None:
+                if uploaded_file.size > 5 * 1024 * 1024:
+                    st.error("❌ File is too large. Please upload a file under 5MB.")
+                else:
+                    file_content = uploaded_file.getvalue().decode("utf-8")
+                    if len(file_content) > 4000:
+                            st.warning("❌ File content exceeds 4000 characters.Chunking and splitting might solve this but Chunking isn't stable i.e Chunking might not always work also most features would be deactivated to ensure stability during chunking.")
+                            with st.expander("Do wish to perform chunking?"):
+                                col1, col2 = st.columns(2)
+                                with col1:
+                                    if st.button("Yes"):
+                                        with st.spinner("Hold on"):
+                                            start = time.perf_counter()
+                                            total = len(file_content)
+                                            st.write(f"Total characters: {total}")
+                                            process_parallel_variables(file_content, target_lang_code, uploaded_file.name, total)
+                                            end = time.perf_counter()
+                                            total = end - start
+                                            st.write(f"It took {total:.6f} seconds to translate the file") 
+                                            st.caption("Translation errors may occur")
+                                with col2:
+                                    if st.button("No"):
+                                        st.write("Understood")
+                                            
+        # Output: First half: abcd, Second half: efgh
+        
+                    else:
+                            st.text_area("Original Content Preview", file_content, height=100)
+        
+                            if st.button("Translate File"):
+                                with st.spinner(f"Translating file to {selected_lang_name}..."):
+                                    translated_content = perform_translation(file_content, target_lang_code)
+        
+                                    st.subheader("Translated Content:")
+                                    st.text_area("Result Preview", translated_content, height=200)
+                                    st.caption("Translation errors may occur")
+        
+                                    st.download_button(
+                                        label="Download Translated File",
+                                        data=translated_content,
+                                        file_name=f"Versatranslate_v1_{selected_lang_name}_{uploaded_file.name}",
+                                        mime="text/plain"
+                                    )
+        
+        # --- HISTORY DISPLAY ---
+    st.subheader("Your Translation History")
+    user_id = get_current_user_id()
+    history = supabase.table("translation_history").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
+    with st.expander("Clear translation history"):
+            st.write("Are you sure, this wipes all account history?")
             col1, col2 = st.columns(2)
             with col1:
-                if st.button("Yes"):
-                    st.session_state["Agree"] = True
-                    st.rerun()
+                if st.button("Yes", key="clear_history_confirm"):
+                    with st.spinner():
+                        success, message = clear_history()
+            # Render based on the result
+                        if success:
+                            st.success(message)
+                            st.rerun()
+                        else:
+                                st.error(message) # Show the error nicely in the UI# Refresh only if the operation actually succeeded
             with col2:
-                if st.button("No"):
-                    st.session_state['authenticated'] = False
+                if st.button("No", key="n0_clear_history"):
+                    st.write("Understood")
+                    time.sleep(1)
                     st.rerun()
-        st.stop()
     
-    # --- LOGIC ---
-def event():
-        if st.session_state.get("run_words"):
-            n = random.randint(1, 20)
-            st.toast(f"🎉 {words.get(n)}", icon="👋")
-            st.session_state["run_words"] = False
     
-st.title("🌐 VersaTranslate")
-event()
-def process_parallel_variables(text, code, name, total, limit=4000):
+    # 1. Fetching Logic (Optimized for speed)
+    def get_history_df(user_id):
         try:
-            # Split the original into a list of chunks
-            original_chunks = [text[i:i+limit] for i in range(0, len(text), limit)]
-            translated_chunks = []
+            response = supabase.table("translation_history") \
+                .select("target_lang, output_text, created_at") \
+                .eq("user_id", user_id) \
+                .order("created_at", desc=True) \
+                .limit(10) \
+                .execute()
             
-            progress_bar = st.progress(0)
-            status_text = st.empty()
-            
-            for i, chunk in enumerate(original_chunks):
-                status_text.text(f"Processing segment {i+1} of {len(original_chunks)}...")
-                
-                
-                # 1. Translate the chunk
-                t_chunk = perform_translation_chunk(chunk, code) 
-                translated_chunks.append(t_chunk)
-                
-                # 2. Update Progress
-                progress_bar.progress((i + 1) / len(original_chunks))
-                
-            # 3. Concatenate everything at the end
-            final_original = "".join(original_chunks)
-            final_translated = "".join(translated_chunks)
-            # Instead of save_to_supabase(full_orig, full_trans):
-            st.divider()
-            st.success("Translation complete!")
-        
-        # Prepare the data for download
-    
-            st.download_button(
-                    label="Download Translation",
-                    data=final_translated,
-                    file_name=f"Versatranslate_v1_demo_{name}",
-                    mime="text/plain"
-            )
+            if response.data:
+                # Convert to DataFrame for that "Finer" table look
+                df = pd.DataFrame(response.data)
+                # Clean up column names for the UI
+                df.columns = ["Language", "Translation", "Timestamp"]
+                return df
+            return pd.DataFrame()
         except Exception as e:
-            st.stop
-            st.write("An error occured. Try again later")
+            handler.log(f"History Fetch Error: {e}")
+            return pd.DataFrame()
     
-def perform_translation_chunk(text, target_lang):
-        try:
-            translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
-            return translated_text
-        except Exception as e:
-            return "An error ocurred during translation"
-    
-    
-    # --- NEW SUPABASE TRANSLATION LOGIC ---
-def perform_translation(text, target_lang):
-        try:
-            translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
-            user_id = get_current_user_id()
-            
-            # Save to Supabase 'translation_history' table
-            supabase.table("translation_history").insert({
-                "user_id": user_id,
-                "input_text": text,
-                "output_text": translated_text,
-                "target_lang": target_lang,
-            }).execute()
-            
-            return translated_text
-        except Exception as e:
-            translated_text = GoogleTranslator(source='auto', target=target_lang).translate(text)
-            st.write(translated_text)
-            return "An error ocurred during saving"
-    
-    # --- SIDEBAR & HISTORY (Updated for Supabase) ---
-with st.sidebar:
-        st.write(f"Logged in as: {st.session_state['user_email']}")
-    
-        # --- ADMIN PANEL GATED ACCESS ---
-        # Replace with your email to access admin tools
-        if st.session_state['user_email'] == "irekiigbeayoolorunnimi@gmail.com":
-            show_admin_panel()
-    
-        st.divider()
-        st.header("Settings")
-        selected_lang_name = st.selectbox("Choose Target Language:", options=list(language_options.keys()))
-        target_lang_code = language_options[selected_lang_name]
+    # 2. The UI Display
+    with st.expander("📜 Translation History", expanded=True):
+        for entry in history_list:
+            # This creates a "card" effect
+            with st.container(border=True):
+                col1, col2 = st.columns([1, 4])
+                with col1:
+                    st.markdown(f"**{entry['target_lang']}**")
+                    st.caption(f"{entry['created_at'][:10]}") # Show just the date
+                with col2:
+                    st.info(entry['output_text']) # Colored box for the translation
 
-        st.divider()
-        with st.expander("About us"):
-            st.write("We are company named Silktorch founded in Canada, this app is made to ease the worries of translation offering text uploads and our very own file upload doesn't sound special right but it works! Contact us at vulnerability.report.maximillian@gmail.com . We are open to suggestions and we strive to respond to your emails within a minimum of 48 hours and a maximum of a week(don't worry, this has never happened).Thank you for using our app. NOTE: complaints are treated as suggestions.")
-
-        st.divider()
-        with st.expander("Contact us"):
-            st.write("You can contact us at vulnerability.report.maximillian@gmail.com, we are open to any of your suggestionsand we will respond as soon as possible specifically by 48 hours")
-
-        st.divider()
-        with st.expander("Purpose"):
-            st.write("This application is created to gain the trust for our other updates and other apps in work.")
-
-        st.divider()
-        with st.expander("Expected Updates"):
-            st.write("Due to a possible constriction in resources, app may go through changes, we will try as much as possible to maintain how it is right now but you may expect a possible phase of commercialization (Pro tier and an inclusive free tier), we are also testing a beta feature to ensure graceful failures(we will present games incase of errors that may occur in servers or games, NOTE: This is a beta feature and won't be added until it is ready). Our plans or expectations may change at any point.")
-
-        st.divider()
-        with st.expander("E.Q (Expected Questions)"):
-            un_long = [
-                "\nTo maintain seamless translations we use different codes within the app some to alert errors to system and others are meanings of your input, therefore, we have decided to share the meanings of a few of them.",
-                "\nAt times our error renderer might not render an error in human readable language, it will most likely revert to numbers: Error codes:",
-                "\n500 : Error within main User Interface",
-                "\n101 : Login error, likely to be within password credentials area",
-                "\n108 : Sign up error due to password being too short",
-                "\n201 : Sign up error, conflicting User sign up details in database i.e User may already exist",
-                "\n203 : Translation error"
-            ]
-            st.write(
-                un_long[0],
-                un_long[1],
-                un_long[2],
-                un_long[3],
-                un_long[4],
-                un_long[5],
-                un_long[6]
-                 )
-        
-        st.divider()
-        if st.button("Logout"):
-            st.session_state['authenticated'] = False
-            st.session_state['user_email'] = None
-            st.rerun()
-        st.divider()
-        st.write("Versions supported: v1.1.1")
-    
-mode = st.radio("Choose Translation Method:", ["Text Input", "File Upload"], horizontal=True)
-    
-if mode == "Text Input":
-        st.subheader(f"Translate to {selected_lang_name}")
-        eng_text = st.text_area("Enter text to translate:", height=150)
-    
-        if st.button("Translate 🚀"):
-            if eng_text:
-                if len(eng_text)<4000:
-                    with st.spinner(f"Translating to {selected_lang_name}..."):
-                        time.sleep(0.3)
-                        result = perform_translation(eng_text, target_lang_code)
-                        st.subheader("Result:")
-                        st.success(result)
-                        st.caption("Translation errors may occur")
-                else:
-                    st.warning("Input is less than 4000 characters, switch to our file translator for larger translations")
-            else:
-                st.warning("Please enter some text.")
-else:
-        # --- FILE UPLOAD LOGIC ---
-        st.subheader(f"Translate .txt File to {selected_lang_name}")
-        uploaded_file = st.file_uploader("Choose a TXT file", type="txt", help="Max size: 5MB")
-    
-        if uploaded_file is not None:
-            if uploaded_file.size > 5 * 1024 * 1024:
-                st.error("❌ File is too large. Please upload a file under 5MB.")
-            else:
-                file_content = uploaded_file.getvalue().decode("utf-8")
-                if len(file_content) > 4000:
-                        st.warning("❌ File content exceeds 4000 characters.Chunking and splitting might solve this but Chunking isn't stable i.e Chunking might not always work also most features would be deactivated to ensure stability during chunking.")
-                        with st.expander("Do wish to perform chunking?"):
-                            col1, col2 = st.columns(2)
-                            with col1:
-                                if st.button("Yes"):
-                                    with st.spinner("Hold on"):
-                                        start = time.perf_counter()
-                                        total = len(file_content)
-                                        st.write(f"Total characters: {total}")
-                                        process_parallel_variables(file_content, target_lang_code, uploaded_file.name, total)
-                                        end = time.perf_counter()
-                                        total = end - start
-                                        st.write(f"It took {total:.6f} seconds to translate the file") 
-                                        st.caption("Translation errors may occur")
-                            with col2:
-                                if st.button("No"):
-                                    st.write("Understood")
-                                        
-    # Output: First half: abcd, Second half: efgh
-    
-                else:
-                        st.text_area("Original Content Preview", file_content, height=100)
-    
-                        if st.button("Translate File"):
-                            with st.spinner(f"Translating file to {selected_lang_name}..."):
-                                translated_content = perform_translation(file_content, target_lang_code)
-    
-                                st.subheader("Translated Content:")
-                                st.text_area("Result Preview", translated_content, height=200)
-                                st.caption("Translation errors may occur")
-    
-                                st.download_button(
-                                    label="Download Translated File",
-                                    data=translated_content,
-                                    file_name=f"Versatranslate_v1_{selected_lang_name}_{uploaded_file.name}",
-                                    mime="text/plain"
-                                )
-    
-    # --- HISTORY DISPLAY ---
-st.subheader("Your Translation History")
-user_id = get_current_user_id()
-history = supabase.table("translation_history").select("*").eq("user_id", user_id).order("created_at", desc=True).execute()
-with st.expander("Clear translation history"):
-        st.write("Are you sure, this wipes all account history?")
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Yes", key="clear_history_confirm"):
-                with st.spinner():
-                    success, message = clear_history()
-        # Render based on the result
-                    if success:
-                        st.success(message)
-                        st.rerun()
-                    else:
-                            st.error(message) # Show the error nicely in the UI# Refresh only if the operation actually succeeded
-        with col2:
-            if st.button("No", key="n0_clear_history"):
-                st.write("Understood")
-                time.sleep(1)
-                st.rerun()
-
-
-# 1. Fetching Logic (Optimized for speed)
-def get_history_df(user_id):
-    try:
-        response = supabase.table("translation_history") \
-            .select("target_lang, output_text, created_at") \
-            .eq("user_id", user_id) \
-            .order("created_at", desc=True) \
-            .limit(10) \
-            .execute()
-        
-        if response.data:
-            # Convert to DataFrame for that "Finer" table look
-            df = pd.DataFrame(response.data)
-            # Clean up column names for the UI
-            df.columns = ["Language", "Translation", "Timestamp"]
-            return df
-        return pd.DataFrame()
-    except Exception as e:
-        handler.log(f"History Fetch Error: {e}")
-        return pd.DataFrame()
-
-# 2. The UI Display
-with st.expander("📜 Translation History", expanded=True):
-    for entry in history_list:
-        # This creates a "card" effect
-        with st.container(border=True):
-            col1, col2 = st.columns([1, 4])
-            with col1:
-                st.markdown(f"**{entry['target_lang']}**")
-                st.caption(f"{entry['created_at'][:10]}") # Show just the date
-            with col2:
-                st.info(entry['output_text']) # Colored box for the translation
+except Exception as e:
+    handler.log(f"Script Crash Crash: {e}", code="500")
+    handler.respond(code="500")
