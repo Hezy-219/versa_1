@@ -27,22 +27,56 @@ def sign_up_user(email, password):
             "email": email, 
             "password": password
         })
-        # If res.user exists, they are signed up!
+        
+        # Supabase returns the user object on success
         if res.user:
-            return True, "Success"
+            return True, "Sign-up successful! Please check your email for a confirmation link."
+        
+        # If res.user is somehow None but no exception was raised
+        return False, "Sign-up failed: Unknown error."
+
     except Exception as e:
-        handler.log("Error during sign-up", code="201")
+        # Log the error for your internal tracking
+        handler.log(f"Error during sign-up: {str(e)}", code="201")
+        
+        # Return a clean error message to the UI
+        # We strip the error message to keep it user-friendly
+        error_msg = str(e)
+        if "already registered" in error_msg.lower():
+            return False, "This email is already registered."
+        
+        return False, f"Sign-up failed: {error_msg}"
 
 def login(email, password):
     """Handles user login via Supabase Auth."""
     try:
-        response = supabase.auth.sign_in_with_password({"email": email, "password": password})
+        response = supabase.auth.sign_in_with_password({
+            "email": email, 
+            "password": password
+        })
+        
         if response.user:
             return True, "Login successful!"
-        return False, "Invalid email or password."
-    except Exception as e:
-        handler.log("Error during login", code='101')
+        
+        # If the code reaches here, Supabase didn't throw an error 
+        # but didn't return a user (rare, but keeps the return consistent)
+        return False, "Login failed: No user found."
 
+    except Exception as e:
+        # Your custom logger handles the dirty work
+        handler.log(f"Login failed for {email}: {str(e)}", code='101')
+        
+        # We still return False + the error string so main.py 
+        # success, msg = login(...) can execute safely.
+        return False, str(e),
+
+    except Exception as e:
+        # Your custom logger handles the dirty work
+        handler.log(f"Login failed for {email}: {str(e)}", code='101')
+        
+        # We still return False + the error string so main.py 
+        # success, msg = login(...) can execute safely.
+        return False, str(e)
 def get_current_user_id():
     """Retrieves the UUID, checking session state first to bypass Streamlit's 'amnesia'."""
     # Check if we already saved it in this session
