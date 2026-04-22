@@ -367,17 +367,13 @@ def get_history_df(user_id):
         return pd.DataFrame()
 
 # 2. The UI Display
-with st.expander("📜 Recent Translations", expanded=True):
-    user_id = get_current_user_id()
-    if user_id:
-        history_df = get_history_df(user_id)
-        
-        if not history_df.empty:
-            # st.dataframe is interactive and much faster than manual loops
-            st.dataframe(
-                history_df, 
-                use_container_width=True, 
-                hide_index=True
-            )
-        else:
-            st.info("No history yet.")
+with st.expander("📜 Translation History", expanded=True):
+    for entry in history_list:
+        # This creates a "card" effect
+        with st.container(border=True):
+            col1, col2 = st.columns([1, 4])
+            with col1:
+                st.markdown(f"**{entry['target_lang']}**")
+                st.caption(f"{entry['created_at'][:10]}") # Show just the date
+            with col2:
+                st.info(entry['output_text']) # Colored box for the translation
