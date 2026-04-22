@@ -20,7 +20,7 @@ class ErrorHandler:
             "108": "Password too short (min 8 characters).",
             "201": "Sign-up failed. User may already exist.",
             "203": "Translation failed. Try again.",
-            "500": "Something went wrong. USually this doesn't affect page so ignore it however if does, Please try again."
+            "500": "Something went wrong. Usually this doesn't affect page so ignore it however if does, Please try again."
         }
         st.error(f"{messages.get(code, messages['500'])} (Error {code})")
 
