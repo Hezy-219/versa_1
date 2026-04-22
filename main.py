@@ -296,7 +296,7 @@ try:
                                             process_parallel_variables(file_content, target_lang_code, uploaded_file.name, total)
                                             end = time.perf_counter()
                                             total = end - start
-                                            st.write(f"It took {total:.6f} seconds to translate the file") 
+                                            st.write(f"It took {total:.0f} seconds to translate the file") 
                                             st.caption("Translation errors may occur")
                                 with col2:
                                     if st.button("No"):
