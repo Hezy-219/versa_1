@@ -3,4 +3,4 @@ headless = true
 enableCORS = false
 
 [client]
-showErrorDetails = false
+showErrorDetails = true
