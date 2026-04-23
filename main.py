@@ -81,7 +81,8 @@ try:
                         if success:
         # This call triggers the 'save' inside the new get_current_user_id()
                             st.success("Hold on")
-                            uid = get_current_user_id() 
+                            uid = get_current_user_id()
+                            st.session_state['uid'] = uid
         
                             st.session_state.update({
                                 'authenticated': True, 
@@ -351,9 +352,10 @@ try:
         for item in history.data:
             target_id = get_current_user_id()
     
-        if uid:
+        if st.session_state['uid']:
             try:
                         # The query now has a guaranteed UUID to look for
+                uid = st.session_state['uid']
                 response = supabase.table("translation_history")\
                     .select("*")\
                     .eq("user_id", uid)\
