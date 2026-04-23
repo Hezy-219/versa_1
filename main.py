@@ -351,12 +351,12 @@ try:
         for item in history.data:
             target_id = get_current_user_id()
     
-        if target_id:
+        if uid:
             try:
                         # The query now has a guaranteed UUID to look for
                 response = supabase.table("translation_history")\
                     .select("*")\
-                    .eq("user_id", target_id)\
+                    .eq("user_id", uid)\
                     .order("created_at", desc=True)\
                     .execute()
                             
