@@ -215,7 +215,7 @@ try:
     
             st.divider()
             with st.expander("Contact us"):
-                st.write("You can contact us at vulnerability.report.maximillian@gmail.com, we are open to any of your suggestionsand we will respond as soon as possible specifically by 48 hours")
+                st.write("You can contact us at vulnerability.report.maximillian@gmail.com, we are open to any of your suggestions and we will respond as soon as possible specifically by 48 hours")
     
             st.divider()
             with st.expander("Purpose"):
@@ -339,7 +339,6 @@ try:
                             st.rerun()
                         else:
                             handler.log(f"Crash during History clearing: {e}", code="500")# Show the error nicely in the UI# Refresh only if the operation actually succeeded
-                            handler.respond(code="500")
             with col2:
                 if st.button("No", key="n0_clear_history"):
                     st.write("Understood")
