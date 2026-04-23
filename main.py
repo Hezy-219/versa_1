@@ -42,6 +42,7 @@ try:
         st.session_state['Agree'] = False
     if 'user_email' not in st.session_state:
         st.session_state['user_email'] = None
+        st.session_state['uid'] = None
     if 'run_words' not in st.session_state:
         st.session_state['run_words'] = True
     
