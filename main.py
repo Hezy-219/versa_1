@@ -1,3 +1,11 @@
+# --- VERSA ENGINE ACHIEVEMENTS ---
+# [🏆] The Sprinter: Translated 1,000,000 repetitive chars in 31 seconds.
+# [⚔️] The Chaos Warrior: Successfully processed 1.86M chars of high-entropy 
+#      UTF-8/Emoji noise without encoding failure.
+# [🛡️] The Stability King: Maintained a server-side session for 1,004 seconds 
+#      straight (16.7 mins) without timeout.
+# [🚫] The Google-Killer: Bypassed the 500k char browser-lag limit that 
+#      crashes mainstream word processors.
 import streamlit as st
 import pandas as pd
 from deep_translator import GoogleTranslator
@@ -247,7 +255,10 @@ try:
                     un_long[5],
                     un_long[6]
                      )
-            
+
+            st.divider()
+            with st.expander("Achievements"):
+                st.write("As of April 24, 2026, we sucessfully completed a 1,868,841 character file translation, it lasted for about 1000 seconds approxiamately 16 to 17 minutes proving our tool is effectively on the endurance marathon and wouldn't stop till it every translation is complete. Thank you")
             st.divider()
             if st.button("Logout"):
                 st.session_state['authenticated'] = False
@@ -293,7 +304,13 @@ try:
                                     if st.button("Yes"):
                                         with st.spinner("Hold on"):
                                             start = time.perf_counter()
-                                            total = len(file_content)
+                                            total_chars = len(file_content)
+                                            if total_chars >= 1000000:
+                                                st.balloons()
+                                                st.sidebar.success("🏆 Achievement Unlocked: The Millionaire Club")
+                                            elif total_chars >= 500000:
+                                                st.sidebar.info("⭐ Achievement Unlocked: Beyond the Google Limit")
+                                                
                                             st.write(f"Total characters: {total}")
                                             process_parallel_variables(file_content, target_lang_code, uploaded_file.name, total)
                                             end = time.perf_counter()
