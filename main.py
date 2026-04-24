@@ -183,6 +183,14 @@ try:
                 return translated_text
             except Exception as e:
                 return "An error ocurred during translation"
+
+    def total_check(total):
+        if total_chars >= 1000000:
+            st.balloons()
+            st.sidebar.success("🏆 Achievement Unlocked: The Millionaire Club")
+        elif total_chars >= 500000:
+            st.sidebar.info("⭐ Achievement Unlocked: Beyond the Google Limit")
+                                                
         
         
         # --- NEW SUPABASE TRANSLATION LOGIC ---
@@ -305,12 +313,7 @@ try:
                                         with st.spinner("Hold on"):
                                             start = time.perf_counter()
                                             total_chars = len(file_content)
-                                            if total_chars >= 1000000:
-                                                st.balloons()
-                                                st.sidebar.success("🏆 Achievement Unlocked: The Millionaire Club")
-                                            elif total_chars >= 500000:
-                                                st.sidebar.info("⭐ Achievement Unlocked: Beyond the Google Limit")
-                                                
+                                            total_check(total_chars)
                                             st.write(f"Total characters: {total}")
                                             process_parallel_variables(file_content, target_lang_code, uploaded_file.name, total)
                                             end = time.perf_counter()
